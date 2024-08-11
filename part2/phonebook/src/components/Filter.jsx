@@ -3,7 +3,6 @@ import React from "react"
 const Filter = ({ searchQuery, handleSearchChange }) => {
     const handleOnChange = (event) => {
         handleSearchChange(event.target.value)
-        console.log(event.target.value)
     }
    
     return(

@@ -7,23 +7,21 @@ const PersonForm = ({ addPerson }) => {
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
-    console.log(event.target.value);
   }
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
-    console.log(event.target.value)
   }
 
-  const addName = (event) => {
+  const addContact = (event) => {
     event.preventDefault()
-    addPerson({ name: newName, number: newNumber }),
-    setNewName(""),
+    addPerson({ name: newName, number: newNumber })
+    setNewName("")
     setNewNumber("")
-}
+    }
 
     return(
-        <form onSubmit={addName} >
+        <form onSubmit={addContact} >
         <div>
           Name: <input 
           value={newName}
