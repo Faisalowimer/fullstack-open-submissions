@@ -51,17 +51,17 @@ const App = () => {
       if (selectedCountry && selectedCountry.capitalInfo && selectedCountry.capitalInfo?.latlng) {
         const [lat, lon] = selectedCountry.capitalInfo.latlng
         axios
-        .get(`https://api.openweathermap.org/data/3.0/onecall`,{
+        .get(`https://api.openweathermap.org/data/2.5/weather`,{
           params: {
             lat: lat,
             lon: lon,
-            exclude: `minutely, hourly, daily, alerts`,
+            // exclude: `minutely, hourly, daily, alerts`,
             appid: API_KEY,
             units: "metric"
           }
         })
         .then(response => {
-          setWeather(response.data.current)
+          setWeather(response.data)
           console.log(response.data)
         })
       }

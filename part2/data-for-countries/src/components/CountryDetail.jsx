@@ -22,13 +22,13 @@ const CountryDetail = ({ country, weather}) => {
             <h2>Weather in {country.capital[0]}</h2>
             {weather && (
                 <div>
-                    <p>Temperature: {weather.temp} °C</p>
+                    <p>Temperature: {weather.main.temp} °C</p>
                     <p>Weather: {weather.weather[0].description}</p>
                     <img 
                         src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
                         alt={weather.weather[0].description}
                     />
-                    <p>Wind: {weather.wind_speed} m/s</p>
+                    <p>Wind: {weather.wind.speed} m/s</p>
                 </div>
             )}
         </div>
