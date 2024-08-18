@@ -55,7 +55,7 @@ const App = () => {
           params: {
             lat: lat,
             lon: lon,
-            // exclude: `minutely, hourly, daily, alerts`,
+            exclude: `minutely, hourly, daily, alerts`,
             appid: API_KEY,
             units: "metric"
           }
