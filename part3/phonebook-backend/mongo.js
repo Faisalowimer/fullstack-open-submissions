@@ -12,12 +12,12 @@ const url = `mongodb+srv://faisal:${password}@cluster0.zmmf7.mongodb.net/Person?
 mongoose.set("strictQuery", false)
 mongoose.connect(url)
 
-const contactSchema = new mongoose.Schema({
+const personSchema = new mongoose.Schema({
     name: String,
     number: String,
 })
 
-const Person = mongoose.model("Person", contactSchema)
+const Person = mongoose.model("Person", personSchema)
 
 if (process.argv.length === 3) {
     Person.find({}).then(result => {
@@ -31,12 +31,12 @@ if (process.argv.length === 3) {
     const name = process.argv[3]
     const number = process.argv[4]
     
-    const contact = new Person({
+    const person = new Person({
         name: name,
         number: number,
     })
     
-    contact.save().then(result => {
+ person.save().then(result => {
         console.log(`added ${result.name} number ${result.number} to phonebook`)
         mongoose.connection.close()
     })
