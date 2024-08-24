@@ -9,8 +9,8 @@
     "build:ui": "rm -rf dist && cd /Users/faisalowimer/Desktop/Dev/fullstack-open/part3/phonebook-frontend && npm run build && cp -r dist /Users/faisalowimer/Desktop/Dev/fullstack-open/part3/phonebook-backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
-
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "\"Faisal Owimer\"",
   "license": "ISC",
@@ -23,7 +23,11 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.1",
     "@flydotio/dockerfile": "^0.5.8",
+    "@stylistic/eslint-plugin-js": "^2.6.4",
+    "eslint": "^9.9.1",
+    "globals": "^15.9.0",
     "nodemon": "^3.1.4"
   }
 }
