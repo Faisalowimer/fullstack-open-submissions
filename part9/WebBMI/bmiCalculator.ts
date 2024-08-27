@@ -1,29 +1,6 @@
 // BMI formula = weight(kg) / (height(cm) / 100 ** 2 )
 
-import { isNotNumber } from "./utils"
-
-
-interface BmiInputs {
-    weight: number,
-    height: number
-}
-
-const parseArguments = (args: string[]): BmiInputs => {
-    if(args.length !== 2) throw new Error("Please provide exactly two arguments: weight(kg) and height(cm).")
-    
-    const weight = Number(args[0])
-    const height = Number(args[1])
-
-    if (isNotNumber(weight) || isNotNumber(height)) {
-        throw new Error("Provided values for weight and height must be numbers!")
-    }
-    return {
-        weight,
-        height
-    }
-}
-
-const calculateBmi = (weight: number, height: number): string => {
+export const calculateBmi = (weight: number, height: number): string => {
     if (height === 0) throw new Error("Height can't be 0!")
     const bmi = weight / (height / 100) ** 2
 
@@ -33,14 +10,13 @@ const calculateBmi = (weight: number, height: number): string => {
     return `Obese (BMI = ${bmi.toFixed(2)})`
 }
 
-try {
-    const { weight, height } = parseArguments(process.argv.slice(2))
-    const bmiResult = calculateBmi(weight, height)
-    console.log(`The BMI calculation for ${weight}kg and ${height}cm is: ${bmiResult}`)
-} catch (error: unknown) {
-    let errorMessage = "Something went wrong. "
-    if (error instanceof Error) {
-        errorMessage += "Error: " + error.message
+if (require.main === module) {
+    const weight = Number(process.argv[2])
+    const height = Number(process.argv[3])
+
+    if (!weight || !height) {
+    console.log("Please provide height and weight as arguments.")
+    } else {
+    console.log(`BMI: ${calculateBmi(weight, height)}`);
     }
-    console.log(errorMessage)
 }
