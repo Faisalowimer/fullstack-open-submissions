@@ -5,11 +5,11 @@ const getAllDiagnosis = (): Diagnosis[] => {
     return data
 }
 
-const addEntries = () => {
+const addDiagnonsis = () => {
     return null
 }
 
 export default {
     getAllDiagnosis,
-    addEntries,
+    addDiagnonsis,
 }
