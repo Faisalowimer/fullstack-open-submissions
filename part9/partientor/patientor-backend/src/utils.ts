@@ -1,4 +1,5 @@
-import { NewPatientEntry, Gender, } from "./types"
+import { NewPatientEntry, Gender, Entry, healthCheckRating, EntryWithoutId,  } from "./types"
+import { v1 as uuid } from "uuid"
 
 const isString = (text: unknown): text is string => {
     return typeof text === "string" || text instanceof String
@@ -47,8 +48,96 @@ const parseOccupation = (occupation: unknown): string => {
     return occupation
 }
 
+const isHealthCheckRating = (param: any): param is healthCheckRating => {
+    return Object.values(healthCheckRating).includes(param)
+}
 
-const toNewPatientEntry = (object: unknown): NewPatientEntry => {
+const parseDiagnosisCodes = (object: unknown): Array<string> => {
+    if (!object || typeof object !== "object" || !("diagnosisCodes" in object)) {
+        return [] as Array<string>
+    }
+    return object.diagnosisCodes as Array<string>
+}
+
+const parseBaseEntry = (object: any) => {
+    if (!isString(object.description)) {
+        throw new Error("Invalid or missing description.");
+    }
+
+    if (!isString(object.date) || !isDate(object.date)) {
+        throw new Error("Invalid or missing date.");
+    }
+
+    if (!isString(object.specialist)) {
+        throw new Error("Invalid or missing specialist.");
+    }
+
+    const baseEntry = {
+        description: object.description,
+        date: object.date,
+        specialist: object.specialist,
+        diagnosisCodes: parseDiagnosisCodes(object),
+    }
+
+    return baseEntry
+}
+
+const assertNever = (value: never): never => {
+    throw new Error(`Unhaldled discriminated union memeber: ${JSON.stringify(value)}`);
+    
+}
+
+export const toNewEntry = (object: EntryWithoutId): Entry => {
+    const baseEntry = parseBaseEntry(object)
+
+    switch (object.type) {
+        case "Hospital":
+            if (!object.discharge || !isString(object.discharge.date) || !isString(object.discharge.criteria)) {
+                throw new Error("Invalid or missing discharge information.");   
+            }
+            return {
+                ...baseEntry,
+                type: "Hospital",
+                discharge: {
+                    date: object.discharge.date,
+                    criteria: object.discharge.criteria,
+                },
+                id: uuid()
+            }
+        
+            case "OccupationalHealthcare":
+                if (!isString(object.employerName)) {
+                    throw new Error("Invalid or missing employerName.");
+                }
+                return {
+                    ...baseEntry,
+                    type: "OccupationalHealthcare",
+                    employerName: object.employerName,
+                    sickLeave: object.sickLeave ? {
+                        startDate: object.sickLeave.startDate,
+                        endDate: object.sickLeave.endDate,
+                    } : undefined,
+                    id: uuid()
+                }
+
+            case "HealthCheck":
+                if (typeof object.healthCheckRating !== "number" || !isHealthCheckRating(object.healthCheckRating)) {
+                    throw new Error("Invalid or missing healthCheckRating.");
+                }
+                return {
+                    ...baseEntry,
+                    type: "HealthCheck",
+                    healthCheckRating: object.healthCheckRating,
+                    id: uuid()
+                }
+    
+        default:
+            return assertNever(object)
+            
+    }
+}
+
+export const toNewPatientEntry = (object: unknown): NewPatientEntry => {
     if (!object || typeof object !== "object") {
         throw new Error("Incorrect or missing data");
     }
@@ -66,7 +155,7 @@ const toNewPatientEntry = (object: unknown): NewPatientEntry => {
         }
         return newEntry
     }
-    throw new Error("Inccorect data: some fields are missing");
+    throw new Error("Incorrect data: some fields are missing");
 }
 
 export default toNewPatientEntry
