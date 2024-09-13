@@ -14,40 +14,40 @@ interface PatientDetailPageProps {
 }
 
 const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
-    const { id } = useParams<{ id: string}>()
-    const [patient, setPatient] = useState<Patient | null>(null)
-    const [showForm, setShowForm] = useState<boolean>(false)
+    const { id } = useParams<{ id: string}>();
+    const [patient, setPatient] = useState<Patient | null>(null);
+    const [showForm, setShowForm] = useState<boolean>(false);
 
     const fetchPatient = async () => {
         try {
             const { data: patientData } = 
             await axios.get<Patient>
-            (`${apiBaseUrl}/patients/${id}`)
-            setPatient(patientData)
+            (`${apiBaseUrl}/patients/${id}`);
+            setPatient(patientData);
         } catch (error) {
             console.log("Failed to fetch patient", error);
         }
-    }
+    };
 
     useEffect(() => {
-        void fetchPatient()
-    }, [id])
+        void fetchPatient();
+    }, [id]);
 
     const getGenderIcon = (gender: Gender) => {
         switch (gender) {
             case Gender.Male:
-                return <Male />
+                return <Male />;
             case Gender.Female:
-                return <Female />
+                return <Female />;
             case Gender.Other:
-                return <Transgender />
+                return <Transgender />;
             default:
-                return null
+                return null;
         }
-    }
+    };
 
     if (!patient) {
-        return (<p>Loading patient details...</p>)
+        return (<p>Loading patient details...</p>);
     }
 
     return (
@@ -70,6 +70,7 @@ const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
             {showForm && (
                 <AddFormEntry 
                 refreshPatientEntries={fetchPatient}
+                diagnoses={diagnoses}
                 />
             )}
 
@@ -108,7 +109,7 @@ const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
                 </List>
             </Box>
         </div>
-    )
-}
+    );
+};
 
-export default PatientDetailPage
+export default PatientDetailPage;

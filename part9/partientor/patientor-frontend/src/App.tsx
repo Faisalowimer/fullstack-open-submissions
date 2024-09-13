@@ -12,7 +12,7 @@ import PatientDetailPage from "./components/PatientDetailPage";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
@@ -24,12 +24,12 @@ const App = () => {
     
     const fetchDiagnoses = async () => {
       const { data: diagnosesData } = 
-      await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`)
-      setDiagnoses(diagnosesData)
-    }
+      await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`);
+      setDiagnoses(diagnosesData);
+    };
     
     void fetchPatientList();
-    void fetchDiagnoses()
+    void fetchDiagnoses();
   }, []);
 
   return (

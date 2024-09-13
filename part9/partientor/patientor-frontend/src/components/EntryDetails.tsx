@@ -13,7 +13,7 @@ const assertNever = (value: never): never => {
     throw new Error(
         `Unhandled discriminated union member: ${JSON.stringify(value)}`
     );
-}
+};
 
 const HealthCheckIcon: React.FC<{ 
     rating: HealthCheckRating 
@@ -22,32 +22,32 @@ const HealthCheckIcon: React.FC<{
         case HealthCheckRating.Healthy:
             return <Favorite 
                         style={{ color: "green" }} 
-                    />
+                    />;
             
         case HealthCheckRating.LowRisk:
             return <Favorite 
                         style={{ color: "yellow" }} 
-                    />
+                    />;
         
         case HealthCheckRating.HighRisk:
             return <Favorite 
                         style={{ color: "orange" }} 
-                    />
+                    />;
 
         case HealthCheckRating.CriticalRisk:
             return <Favorite 
                         style={{ color: "red" }}
-                    />
+                    />;
         default:
             return null;
     }
-}
+};
 
 const getDiagnosisDescription = 
 (code: string, diagnoses: Diagnosis[]): string | undefined => {
-    const diagnosis = diagnoses.find((d) => d.code === code)
-    return diagnosis ? diagnosis.name : undefined
-}
+    const diagnosis = diagnoses.find((d) => d.code === code);
+    return diagnosis ? diagnosis.name : undefined;
+};
 
 const EntryCommonDetails: React.FC<{ 
     description: string; 
@@ -91,7 +91,7 @@ const EntryCommonDetails: React.FC<{
             </Box>
         )}
     </>
-)
+);
 
 const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
     switch (entry.type) {
@@ -122,7 +122,7 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
                         </Typography>
                     </CardContent>
                 </Card>
-            )
+            );
             
             case "OccupationalHealthcare":
                 return (
@@ -153,7 +153,7 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
                             )}
                         </CardContent>
                     </Card>
-                )
+                );
            
                 case "HealthCheck":
                 return (
@@ -182,11 +182,11 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
                             />
                         </CardContent>
                     </Card>
-                )
+                );
 
         default:
-            return assertNever(entry)
+            return assertNever(entry);
     }
-}
+};
 
-export default EntryDetails
+export default EntryDetails;
