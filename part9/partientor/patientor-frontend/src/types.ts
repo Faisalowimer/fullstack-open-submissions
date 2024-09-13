@@ -55,6 +55,8 @@ interface OccupationalHealthcareEntry extends BaseEntry {
   };
 }
 
+export type EntryType = "HealthCheck" | "Hospital" | "OccupationalHealthcare"
+
 export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry

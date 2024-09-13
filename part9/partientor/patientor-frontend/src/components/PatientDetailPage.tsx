@@ -7,7 +7,7 @@ import { Male, Female, Transgender } from "@mui/icons-material";
 import { Gender, Patient, Entry, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryDetails from "./EntryDetails";
-import HealthCheckEntryForm from "./HealthCheckEntryForm";
+import AddFormEntry from "./AddFormEntry";
 
 interface PatientDetailPageProps {
     diagnoses: Diagnosis[]
@@ -68,7 +68,7 @@ const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
 
             <br></br>
             {showForm && (
-                <HealthCheckEntryForm 
+                <AddFormEntry 
                 refreshPatientEntries={fetchPatient}
                 />
             )}
