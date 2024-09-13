@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Box, List, Typography } from "@mui/material";
+import { Box, Button, List, Typography } from "@mui/material";
 import { Male, Female, Transgender } from "@mui/icons-material";
 
 import { Gender, Patient, Entry, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryDetails from "./EntryDetails";
+import HealthCheckEntryForm from "./HealthCheckEntryForm";
 
 interface PatientDetailPageProps {
     diagnoses: Diagnosis[]
@@ -15,19 +16,20 @@ interface PatientDetailPageProps {
 const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
     const { id } = useParams<{ id: string}>()
     const [patient, setPatient] = useState<Patient | null>(null)
+    const [showForm, setShowForm] = useState<boolean>(false)
+
+    const fetchPatient = async () => {
+        try {
+            const { data: patientData } = 
+            await axios.get<Patient>
+            (`${apiBaseUrl}/patients/${id}`)
+            setPatient(patientData)
+        } catch (error) {
+            console.log("Failed to fetch patient", error);
+        }
+    }
 
     useEffect(() => {
-        const fetchPatient = async () => {
-            try {
-                const { data: patientData } = 
-                await axios.get<Patient>
-                (`${apiBaseUrl}/patients/${id}`)
-                setPatient(patientData)
-            } catch (error) {
-                console.log("Failed to fetch patient", error);
-            }
-        }
-
         void fetchPatient()
     }, [id])
 
@@ -54,13 +56,34 @@ const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
             <Typography variant="h4">
                 {patient.name} {getGenderIcon(patient.gender)}
             </Typography>
+            
             <br></br>
             <Typography variant="body1">
                 ssn: {patient.ssn}
             </Typography>
+           
             <Typography variant="body1">
                 occupation: {patient.occupation}
             </Typography>
+
+            <br></br>
+            {showForm && (
+                <HealthCheckEntryForm 
+                refreshPatientEntries={fetchPatient}
+                />
+            )}
+
+            <Button
+                color="primary"
+                variant="contained"
+                sx={{ width: "12em"}}
+                onClick={() => 
+                    setShowForm(!showForm)
+                }
+            >
+                {showForm ? "Cancel" : "Add New Entry"}
+            </Button>
+            
             <Box 
                 mt={4} 
                 sx={{ 
@@ -73,6 +96,7 @@ const PatientDetailPage = ({ diagnoses }: PatientDetailPageProps) => {
                 <Typography variant="h5">
                     Entries
                 </Typography>
+               
                 <List sx={{ width: "100%"}}>
                     {patient.entries.map((entry: Entry) => (
                         <EntryDetails 

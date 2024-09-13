@@ -64,9 +64,11 @@ const EntryCommonDetails: React.FC<{
         <Typography variant="body1">
             {description}
         </Typography>
+        
         <Typography variant="body2">
             Diagnose by: {specialist}
         </Typography>
+        
         {diagnosisCodes && (
             <Box    
                 sx={{ 
@@ -74,9 +76,11 @@ const EntryCommonDetails: React.FC<{
                     marginBottom: "1em" 
                 }}
             >
+                
                 <Typography variant="body2">
                     Diagnosis codes: 
                 </Typography>
+                
                 <ul>
                     {diagnosisCodes.map((code) => (
                         <li key={code}>
@@ -100,16 +104,19 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
                         marginBottom: "1em" 
                         }}
                     >
+                    
                     <CardContent>
                         <Typography variant="h6">
                             {entry.date} <LocalHospital />
                         </Typography>
+                        
                         <EntryCommonDetails 
                             description={entry.description}
                             specialist={entry.specialist}
                             diagnosisCodes={entry.diagnosisCodes}
                             diagnoses={diagnoses}
                         />
+                        
                         <Typography variant="body2">
                             Discharged on {entry.discharge.date} – {entry.discharge.criteria}
                         </Typography>
@@ -126,16 +133,19 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
                             marginBottom: "1em" 
                             }}
                         >
+                        
                         <CardContent>
                             <Typography variant="h6">
                                 {entry.date} <Work /> {entry.employerName}
                             </Typography>
+                            
                             <EntryCommonDetails 
                                 description={entry.description}
                                 specialist={entry.specialist}
                                 diagnosisCodes={entry.diagnosisCodes}
                                 diagnoses={diagnoses}
                             />
+                            
                             {entry.sickLeave && (
                                 <Typography variant="body2">
                                     Sick Leave: {entry.sickLeave.startDate} to {entry.sickLeave.endDate}
@@ -154,16 +164,19 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
                             marginBottom: "1em" 
                             }}
                         >
+                        
                         <CardContent>
                             <Typography variant="h6">
                                 {entry.date} <Healing />
                             </Typography>
+                            
                             <EntryCommonDetails 
                                 description={entry.description}
                                 specialist={entry.specialist}
                                 diagnosisCodes={entry.diagnosisCodes}
                                 diagnoses={diagnoses}
                             />
+                           
                             <HealthCheckIcon 
                                 rating={entry.healthCheckRating}
                             />
