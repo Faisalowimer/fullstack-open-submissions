@@ -1,6 +1,7 @@
 import { NewPatientEntry, Gender, Entry, healthCheckRating, EntryWithoutId,  } from "./types"
 import { v1 as uuid } from "uuid"
 
+
 const isString = (text: unknown): text is string => {
     return typeof text === "string" || text instanceof String
 }
@@ -59,27 +60,28 @@ const parseDiagnosisCodes = (object: unknown): Array<string> => {
     return object.diagnosisCodes as Array<string>
 }
 
-const parseBaseEntry = (object: any) => {
-    if (!isString(object.description)) {
-        throw new Error("Invalid or missing description.");
+const parseBaseEntry = (object: any): Omit<EntryWithoutId, "type"> => {
+    return {
+        description: parseString(object.description),
+        date: parseDate(object.date),
+        specialist: parseString(object.specialist),
+        diagnosisCodes: parseDiagnosisCodes(object)
     }
+}
 
-    if (!isString(object.date) || !isDate(object.date)) {
-        throw new Error("Invalid or missing date.");
+const parseString = (value: unknown): string => {
+    if (!value || !isString(value)) {
+        throw new Error("Incorrect or missing string value.");
+        
     }
+    return value
+}
 
-    if (!isString(object.specialist)) {
-        throw new Error("Invalid or missing specialist.");
+const parseDate = (value: unknown): string => {
+    if (!value || !isString(value) || !isDate(value)) {
+        throw new Error("Incorrect or missing date value.");
     }
-
-    const baseEntry = {
-        description: object.description,
-        date: object.date,
-        specialist: object.specialist,
-        diagnosisCodes: parseDiagnosisCodes(object),
-    }
-
-    return baseEntry
+    return value
 }
 
 const assertNever = (value: never): never => {
@@ -99,8 +101,8 @@ export const toNewEntry = (object: EntryWithoutId): Entry => {
                 ...baseEntry,
                 type: "Hospital",
                 discharge: {
-                    date: object.discharge.date,
-                    criteria: object.discharge.criteria,
+                    date: parseDate(object.discharge.date),
+                    criteria: parseString(object.discharge.criteria),
                 },
                 id: uuid()
             }
@@ -114,8 +116,8 @@ export const toNewEntry = (object: EntryWithoutId): Entry => {
                     type: "OccupationalHealthcare",
                     employerName: object.employerName,
                     sickLeave: object.sickLeave ? {
-                        startDate: object.sickLeave.startDate,
-                        endDate: object.sickLeave.endDate,
+                        startDate: parseDate(object.sickLeave.startDate),
+                        endDate: parseDate(object.sickLeave.endDate),
                     } : undefined,
                     id: uuid()
                 }
