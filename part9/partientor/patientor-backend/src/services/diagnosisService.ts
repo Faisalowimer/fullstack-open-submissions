@@ -1,15 +1,15 @@
-import data from "../data/diagnoses"
-import { Diagnosis } from "../types"
+import data from "../data/diagnoses";
+import { Diagnosis } from "../types";
 
 const getAllDiagnosis = (): Diagnosis[] => {
-    return data
-}
+    return data;
+};
 
 const addDiagnonsis = () => {
-    return null
-}
+    return null;
+};
 
 export default {
     getAllDiagnosis,
     addDiagnonsis,
-}
+};

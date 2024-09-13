@@ -57,14 +57,14 @@ export interface PatientEntry {
     entries: Entry[]
 }
 
-export type NonSensitiveEntry = Omit<PatientEntry, "ssn" | "entries">
+export type NonSensitiveEntry = Omit<PatientEntry, "ssn" | "entries">;
 
-export type NewPatientEntry = Omit<PatientEntry, "id">
+export type NewPatientEntry = Omit<PatientEntry, "id">;
 
 type UnionOmit<T, K extends string | number | symbol> = T extends
-unknown ? Omit<T, K> : never
+unknown ? Omit<T, K> : never;
 
-export type EntryWithoutId = UnionOmit<Entry, "id">
+export type EntryWithoutId = UnionOmit<Entry, "id">;
 
 export type Entry = 
     | HospitalEntry
