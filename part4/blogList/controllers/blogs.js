@@ -3,7 +3,7 @@ const Blog = require('../models/blog')
 const blogsRouter = express.Router()
 
 // GET all blogs
-blogsRouter.get('/', async (req, res) => {
+blogsRouter.get('/', async (_req, res) => {
   const blogs = await Blog.find({})
   res.json(blogs)
 })
@@ -25,6 +25,27 @@ blogsRouter.post('/', async (req, res) => {
   
   const savedBlog = await blog.save()
   res.status(201).json(savedBlog)
+})
+
+// DELETE a blog post by id
+blogsRouter.delete('/:id', async (req, res) => {
+  const blogId = req.params.id
+  console.log(`Trying to delete blog with id: ${blogId}`)
+
+  try {
+    const deletedBlog = await Blog.findByIdAndDelete(blogId)
+
+    if (deletedBlog) {
+      console.log('Blog deleted successfully:', deletedBlog)
+      res.status(204).end()  
+    } else {
+      console.log('Blog not found with id:', blogId)
+      res.status(404).json({ error: 'Blog not found' }) 
+    }
+  } catch (error) {
+    console.error('Error deleting blog:', error.message)
+    res.status(400).json({ error: 'Invalid blog id' }) 
+  }
 })
 
 module.exports = blogsRouter

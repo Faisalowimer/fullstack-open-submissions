@@ -109,8 +109,7 @@ test('blog post without title returns 400 Bad Request', async () => {
       .post('/api/blogs')
       .send(newBlog)
       .expect(400) 
-  })
-  
+})
   
   test('blog post without url returns 400 Bad Request', async () => {
     const newBlog = {
@@ -123,7 +122,24 @@ test('blog post without title returns 400 Bad Request', async () => {
       .post('/api/blogs')
       .send(newBlog)
       .expect(400) 
-  })
+})
+
+test('a blog post can be deleted', async () => {
+    const blogsAtStart = await api.get('/api/blogs')
+    const blogToDelete = blogsAtStart.body[0]
+    console.log('Blog to delete:', blogToDelete)
+
+  
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)  
+  
+    const blogsAtEnd = await api.get('/api/blogs')
+    assert.strictEqual(blogsAtEnd.body.length, blogsAtStart.body.length - 1)
+  
+    const titles = blogsAtEnd.body.map(b => b.title)
+    assert(!titles.includes(blogToDelete.title))
+})
 
 after(async () => {
     console.log("closing database connection");
