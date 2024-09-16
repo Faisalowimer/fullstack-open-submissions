@@ -141,6 +141,22 @@ test('a blog post can be deleted', async () => {
     assert(!titles.includes(blogToDelete.title))
 })
 
+test('a blog post can be updated with new likes', async () => {
+    const blogsAtStart = await api.get('/api/blogs')
+    const blogToUpdate = blogsAtStart.body[0]
+  
+    const updatedLikes = { likes: blogToUpdate.likes + 10 }
+  
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedLikes)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  
+    const updatedBlog = response.body
+    assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 10)
+  })
+
 after(async () => {
     console.log("closing database connection");
     await mongoose.connection.close()
