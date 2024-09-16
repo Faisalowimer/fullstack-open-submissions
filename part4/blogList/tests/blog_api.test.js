@@ -81,6 +81,23 @@ test("a valid blog post can be added", async () => {
     assert(titles.includes(newBlog.title))
 })
 
+test('a blog post with missing likes defaults to 0', async () => {
+    const newBlog = {
+      title: "A blog without likes",
+      author: "Faisal owimer",
+      url: "https://faisalOwimer.com/no-likes"
+    }
+  
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  
+    const savedBlog = response.body
+    assert.strictEqual(savedBlog.likes, 0)
+})
+
 after(async () => {
     console.log("closing database connection");
     await mongoose.connection.close()
