@@ -46,7 +46,21 @@ test("blogs are returned as json and there are the correct number of them", asyn
     assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
-afterEach(async () => {
+test('blog posts are returned with id instead of _id', async () => {
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  
+    const blogs = response.body
+  
+    blogs.forEach((blog) => {
+      assert.strictEqual(blog.id !== undefined, true)    
+      assert.strictEqual(blog._id === undefined, true)   
+    })
+  })
+
+after(async () => {
     console.log("closing database connection");
     await mongoose.connection.close()
 })
