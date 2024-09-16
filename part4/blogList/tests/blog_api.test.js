@@ -98,6 +98,33 @@ test('a blog post with missing likes defaults to 0', async () => {
     assert.strictEqual(savedBlog.likes, 0)
 })
 
+test('blog post without title returns 400 Bad Request', async () => {
+    const newBlog = {
+      author: "Faisal Owimer",
+      url: "https://faisalOwimer.com/no-title",
+      likes: 4
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400) 
+  })
+  
+  
+  test('blog post without url returns 400 Bad Request', async () => {
+    const newBlog = {
+      title: "A blog without URL",
+      author: "Faisal Owimer",
+      likes: 3
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400) 
+  })
+
 after(async () => {
     console.log("closing database connection");
     await mongoose.connection.close()

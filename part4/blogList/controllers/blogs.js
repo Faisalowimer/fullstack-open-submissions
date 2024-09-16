@@ -12,13 +12,16 @@ blogsRouter.get('/', async (req, res) => {
 blogsRouter.post('/', async (req, res) => {
   const body = req.body
   
+  if (!body.title || !body.url) {
+    return res.status(400).json({ error: "Title or URL missing." })
+  }
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes === undefined ? 0 : body.likes
   })
-  
   
   const savedBlog = await blog.save()
   res.status(201).json(savedBlog)
