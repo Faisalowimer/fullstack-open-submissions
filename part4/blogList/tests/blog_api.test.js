@@ -1,4 +1,4 @@
-const { test, beforeEach, afterEach, after } = require("node:test")
+const { test, beforeEach, after } = require("node:test")
 const assert = require("node:assert").strict
 const mongoose = require("mongoose")
 const supertest = require("supertest")
@@ -58,7 +58,28 @@ test('blog posts are returned with id instead of _id', async () => {
       assert.strictEqual(blog.id !== undefined, true)    
       assert.strictEqual(blog._id === undefined, true)   
     })
-  })
+})
+
+test("a valid blog post can be added", async () => {
+    const newBlog = {
+        title: "Async/Await is the best",
+        author: "Faisal Owimer",
+        url: "https://faisalOwimer.com/async-await",
+        likes: 100
+    }
+
+    await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("COntent-type", /application\/json/)
+
+    const blogsAtEnd = await api.get("/api/blogs")
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length + 1)
+
+    const titles = blogsAtEnd.body.map(b => b.title)
+    assert(titles.includes(newBlog.title))
+})
 
 after(async () => {
     console.log("closing database connection");
