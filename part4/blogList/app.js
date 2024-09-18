@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const cors = require("cors")
 const config = require("./utils/config")
 const logger = require("./utils/logger")
+const Middleware = require("./utils/middleware")
 
 const usersRouter = require("./controllers/users")
 const blogsRouter = require("./controllers/blogs")
@@ -13,6 +14,7 @@ const app = express()
 // Middleware
 app.use(cors())
 app.use(express.json())
+app.use(Middleware.tokenExtractor)
 
 // Routes
 app.use("/api/users", usersRouter)
