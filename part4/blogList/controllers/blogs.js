@@ -1,16 +1,25 @@
 const express = require("express")
 const Blog = require("../models/blog")
+const User = require("../models/user")
+
 const blogsRouter = express.Router()
 
 // GET all blogs
 blogsRouter.get("/", async (_req, res) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate("user", { username: 1, name: 1})
   res.json(blogs)
 })
 
 // POST a new blog
 blogsRouter.post("/", async (req, res) => {
   const body = req.body
+
+  // Find the first user in the database 
+  const user = await User.findOne()
+
+  if (!user) {
+    res.status(400).json({ error: "No users found to associate with the blog" })
+  }
   
   if (!body.title || !body.url) {
     return res.status(400).json({ error: "Title or URL missing." })
@@ -20,10 +29,14 @@ blogsRouter.post("/", async (req, res) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes === undefined ? 0 : body.likes
+    likes: body.likes === undefined ? 0 : body.likes,
+    user: user._id
   })
   
   const savedBlog = await blog.save()
+
+  userBlogs = userBlogs.concat(savedBlog._id)
+  
   res.status(201).json(savedBlog)
 })
 
