@@ -6,6 +6,7 @@ const logger = require("./utils/logger")
 
 const usersRouter = require("./controllers/users")
 const blogsRouter = require("./controllers/blogs")
+const loginRouter = require("./controllers/login")
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use(express.json())
 // Routes
 app.use("/api/users", usersRouter)
 app.use("/api/blogs", blogsRouter)
+app.use("/api/login", loginRouter)
 
 // Connect to MongoDB
 mongoose.connect(config.MONGODB_URI)
