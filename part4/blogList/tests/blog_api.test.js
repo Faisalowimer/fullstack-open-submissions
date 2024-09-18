@@ -46,11 +46,11 @@ test("blogs are returned as json and there are the correct number of them", asyn
     assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
-test('blog posts are returned with id instead of _id', async () => {
+test("blog posts are returned with id instead of _id", async () => {
     const response = await api
-      .get('/api/blogs')
+      .get("/api/blogs")
       .expect(200)
-      .expect('Content-Type', /application\/json/)
+      .expect("Content-Type", /application\/json/)
   
     const blogs = response.body
   
@@ -72,7 +72,7 @@ test("a valid blog post can be added", async () => {
         .post("/api/blogs")
         .send(newBlog)
         .expect(201)
-        .expect("COntent-type", /application\/json/)
+        .expect("Content-type", /application\/json/)
 
     const blogsAtEnd = await api.get("/api/blogs")
     assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length + 1)
@@ -81,7 +81,7 @@ test("a valid blog post can be added", async () => {
     assert(titles.includes(newBlog.title))
 })
 
-test('a blog post with missing likes defaults to 0', async () => {
+test("a blog post with missing likes defaults to 0", async () => {
     const newBlog = {
       title: "A blog without likes",
       author: "Faisal owimer",
@@ -89,16 +89,16 @@ test('a blog post with missing likes defaults to 0', async () => {
     }
   
     const response = await api
-      .post('/api/blogs')
+      .post("/api/blogs")
       .send(newBlog)
       .expect(201)
-      .expect('Content-Type', /application\/json/)
+      .expect("Content-Type", /application\/json/)
   
     const savedBlog = response.body
     assert.strictEqual(savedBlog.likes, 0)
 })
 
-test('blog post without title returns 400 Bad Request', async () => {
+test("blog post without title returns 400 Bad Request", async () => {
     const newBlog = {
       author: "Faisal Owimer",
       url: "https://faisalOwimer.com/no-title",
@@ -106,12 +106,12 @@ test('blog post without title returns 400 Bad Request', async () => {
     }
   
     await api
-      .post('/api/blogs')
+      .post("/api/blogs")
       .send(newBlog)
       .expect(400) 
 })
   
-  test('blog post without url returns 400 Bad Request', async () => {
+  test("blog post without url returns 400 Bad Request", async () => {
     const newBlog = {
       title: "A blog without URL",
       author: "Faisal Owimer",
@@ -119,30 +119,30 @@ test('blog post without title returns 400 Bad Request', async () => {
     }
   
     await api
-      .post('/api/blogs')
+      .post("/api/blogs")
       .send(newBlog)
       .expect(400) 
 })
 
-test('a blog post can be deleted', async () => {
-    const blogsAtStart = await api.get('/api/blogs')
+test("a blog post can be deleted", async () => {
+    const blogsAtStart = await api.get("/api/blogs")
     const blogToDelete = blogsAtStart.body[0]
-    console.log('Blog to delete:', blogToDelete)
+    console.log("Blog to delete:", blogToDelete)
 
   
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)  
   
-    const blogsAtEnd = await api.get('/api/blogs')
+    const blogsAtEnd = await api.get("/api/blogs")
     assert.strictEqual(blogsAtEnd.body.length, blogsAtStart.body.length - 1)
   
     const titles = blogsAtEnd.body.map(b => b.title)
     assert(!titles.includes(blogToDelete.title))
 })
 
-test('a blog post can be updated with new likes', async () => {
-    const blogsAtStart = await api.get('/api/blogs')
+test("a blog post can be updated with new likes", async () => {
+    const blogsAtStart = await api.get("/api/blogs")
     const blogToUpdate = blogsAtStart.body[0]
   
     const updatedLikes = { likes: blogToUpdate.likes + 10 }
@@ -151,7 +151,7 @@ test('a blog post can be updated with new likes', async () => {
       .put(`/api/blogs/${blogToUpdate.id}`)
       .send(updatedLikes)
       .expect(200)
-      .expect('Content-Type', /application\/json/)
+      .expect("Content-Type", /application\/json/)
   
     const updatedBlog = response.body
     assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 10)

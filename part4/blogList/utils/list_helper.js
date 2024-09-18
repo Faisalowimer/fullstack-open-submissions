@@ -24,7 +24,7 @@ const favoriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
     if (blogs.length === 0) return null
   
-    const authorCounts = _.countBy(blogs, 'author')
+    const authorCounts = _.countBy(blogs, "author")
     const topAuthor = _.maxBy(_.keys(authorCounts), author => 
     authorCounts[author]
     )
