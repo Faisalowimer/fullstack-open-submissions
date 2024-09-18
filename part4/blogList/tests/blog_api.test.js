@@ -1,9 +1,11 @@
-const { test, beforeEach, after } = require("node:test")
+const { test, beforeEach, describe, after } = require("node:test")
 const assert = require("node:assert").strict
+const bcrypt = require("bcrypt")
 const mongoose = require("mongoose")
 const supertest = require("supertest")
 const app = require("../app")
 const Blog = require("../models/blog")
+const User = require("../models/user")
 const api = supertest(app)
 
 const initialBlogs = [
@@ -155,6 +157,84 @@ test("a blog post can be updated with new likes", async () => {
   
     const updatedBlog = response.body
     assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 10)
+  })
+
+beforeEach(async () => {
+    await User.deleteMany({})
+  
+    const passwordHash = await bcrypt.hash("password123", 10)
+    const user = new User({ username: "existingUser", passwordHash })
+  
+    await user.save()
+})
+  
+describe("creating a new user", () => {
+    test("succeeds with a fresh valid username and password", async () => {
+      const newUser = {
+        username: "validUser",
+        name: "Valid User",
+        password: "password123",
+        }
+  
+      const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(201)
+        .expect("Content-Type", /application\/json/)
+  
+      const usersAtEnd = await User.find({})
+      assert.strictEqual(usersAtEnd.length, 2)
+      const usernames = usersAtEnd.map(u => u.username)
+      assert(usernames.includes(newUser.username))
+    })
+  
+    test("fails with 400 if username is shorter than 3 characters", async () => {
+      const newUser = {
+        username: "ab",
+        name: "Invalid User",
+        password: "password123",
+      }
+  
+      const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/)
+  
+      assert.strictEqual(response.body.error, "Username must be at least 3 characters long")
+    })
+  
+    test("fails with 400 if password is shorter than 3 characters", async () => {
+      const newUser = {
+        username: "validUser",
+        name: "Valid User",
+        password: "pw",
+      }
+  
+      const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/)
+  
+      assert.strictEqual(response.body.error, "Password must be at least 3 characters long")
+    })
+  
+    test("fails with 400 if username already exists", async () => {
+      const newUser = {
+        username: "existingUser",
+        name: "Duplicate User",
+        password: "password123",
+      }
+  
+      const response = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/)
+  
+      assert.strictEqual(response.body.error, "Username must be unique")
+    })
   })
 
 after(async () => {
