@@ -18,7 +18,7 @@ app.use(Middleware.tokenExtractor)
 
 // Routes
 app.use("/api/users", usersRouter)
-app.use("/api/blogs", blogsRouter)
+app.use("/api/blogs", Middleware.userExtractor, blogsRouter)
 app.use("/api/login", loginRouter)
 
 // Connect to MongoDB

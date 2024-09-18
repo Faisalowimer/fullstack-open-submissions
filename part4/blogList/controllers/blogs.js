@@ -1,7 +1,6 @@
 const express = require("express")
 const Blog = require("../models/blog")
-
-
+const middleware = require("../utils/middleware")
 
 const blogsRouter = express.Router()
 
@@ -12,13 +11,9 @@ blogsRouter.get("/", async (_req, res) => {
 })
 
 // POST a new blog and assign the logged-in user as the creator
-blogsRouter.post("/", async (req, res) => {
+blogsRouter.post("/", middleware.userExtractor, async (req, res) => {
   const body = req.body
   const user = req.user
-
-  if (!user) {
-    return res.status(400).json({ error: "No users found to associate with the blog" })
-  }
   
   if (!body.title || !body.url) {
     return res.status(400).json({ error: "Title or URL missing." })
@@ -42,13 +37,14 @@ blogsRouter.post("/", async (req, res) => {
 })
 
 // DELETE a blog post by id
-blogsRouter.delete("/:id", async (req, res) => {
+blogsRouter.delete("/:id", middleware.userExtractor, async (req, res) => {
   const blogId = req.params.id
   const user = req.user
   console.log(`Trying to delete blog with id: ${blogId}`)
   
   try {
-    const deletedBlog = await Blog.findById(blogId)
+    const deletedBlog = await Blog.findById(blogId).populate("user")
+    console.log("Found blog with user:", deletedBlog.user);
 
     // If blog not found
     if (!deletedBlog) {
@@ -56,7 +52,7 @@ blogsRouter.delete("/:id", async (req, res) => {
     }
 
     // Check if the user who created the blog is the one making the request
-    if (deletedBlog.user.toString() !== decodedToken.id.toString()) {
+    if (deletedBlog.user.toString() !== user.id.toString()) {
       return res.status(403).json({ error: "Only the creator can delete this blog" })
     }
 
