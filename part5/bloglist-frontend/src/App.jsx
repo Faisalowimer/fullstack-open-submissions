@@ -59,11 +59,14 @@ const App = () => {
     }
   };
 
-  const updateBlogLikes = (updatedBlog) => {
-    const updatedBlogs = blogs.map((blog) =>
-      blog.id === updatedBlog.id ? updatedBlog : blog
-    );
-    setBlogs(updatedBlogs.sort((a, b) => b.likes - a.likes));
+  const updateBlogLikes = async (updatedBlog) => {
+    try {
+      const returnedBlog = await blogService.update(updatedBlog.id, updatedBlog); 
+      const updatedBlogs = blogs.map((blog) => (blog.id === returnedBlog.id ? returnedBlog : blog)); 
+      setBlogs(updatedBlogs.sort((a, b) => b.likes - a.likes)); 
+    } catch (error) {
+      console.error("Failed to update likes", error);
+    }
   };
 
   const handleLogout = () => {
@@ -89,7 +92,7 @@ const App = () => {
       setNewUrl(""); 
       showNotification(
         `Blog "${returnedBlog.title}" by ${returnedBlog.author} added`,
-        "success"
+        "success",
       );
       togglableRef.current.toggleVisibility();
     } catch (error) {
